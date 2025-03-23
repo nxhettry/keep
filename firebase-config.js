@@ -1,6 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getFirestore, collection } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,6 +22,25 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const accountsCollection = collection(db, "accounts");
+const notesCollection = collection(db, "notes");
+const cardsCollection = collection(db, "cards");
+const pinsCollection = collection(db, "pins");
+const keysCollection = collection(db, "keys");
+
 const analytics = getAnalytics(app);
 
-export { app, analytics };
+export {
+  app,
+  analytics,
+  db,
+  storage,
+  accountsCollection,
+  notesCollection,
+  cardsCollection,
+  pinsCollection,
+  keysCollection,
+};
