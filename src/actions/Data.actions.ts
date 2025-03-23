@@ -2,7 +2,15 @@
 
 import { EntrySchema } from "../../types/entry.types";
 import { addDoc } from "@firebase/firestore";
-import { notesCollection } from "../../firebase-config";
+import {
+  accountsCollection,
+  cardsCollection,
+  keysCollection,
+  notesCollection,
+  pinsCollection,
+} from "../../firebase-config";
+
+const log = (text: string) => console.log(`Saving ${text} to database . . .`);
 
 const postContent = async (
   category: string,
@@ -11,17 +19,25 @@ const postContent = async (
 ) => {
   switch (category) {
     case "accounts":
-      break;
+      log("account");
+      await addDoc(accountsCollection, { title, content });
+      return true;
     case "notes":
-      console.log("Saving note to database . . .");
-      await addDoc(notesCollection, { category, title, content });
+      log("note");
+      await addDoc(notesCollection, { title, content });
       return true;
     case "cards":
-      break;
+      log("card");
+      await addDoc(cardsCollection, { title, content });
+      return true;
     case "pins":
-      break;
+      log("pin");
+      await addDoc(pinsCollection, { title, content });
+      return true;
     case "keys":
-      break;
+      log("key");
+      await addDoc(keysCollection, { title, content });
+      return true;
     default:
       break;
   }
