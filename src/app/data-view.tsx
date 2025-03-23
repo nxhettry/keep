@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Select,
   SelectContent,
@@ -5,10 +7,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FilterData } from "@/actions/Data.actions";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LoadingButton from "./loading-button";
+import { getContent } from "@/actions/Data.actions";
+import { useState } from "react";
+import { EntryType } from "../../types/entry.types";
 
 const dropdownOptions = [
   { value: "notes", label: "Notes" },
@@ -18,6 +22,33 @@ const dropdownOptions = [
 ];
 
 const DataView = () => {
+  const [data, setData] = useState<EntryType[] | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string | undefined>();
+
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleDataFetching = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedOption) {
+      setError("Please select a data type");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const allData = await getContent(selectedOption);
+      console.log(allData);
+    } catch (error) {
+      setError("Failed to fetch data. Try again later.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Card className="w-full max-w-md shadow-lg">
       <CardHeader>
@@ -27,7 +58,7 @@ const DataView = () => {
       </CardHeader>
 
       <CardContent>
-        <form action={FilterData} className="space-y-6">
+        <form onSubmit={handleDataFetching} className="space-y-6">
           <div className="space-y-2">
             <Label
               htmlFor="option"
@@ -35,7 +66,11 @@ const DataView = () => {
             >
               Select Data Type
             </Label>
-            <Select name="option" defaultValue="">
+            <Select
+              name="option"
+              value={selectedOption}
+              onValueChange={setSelectedOption}
+            >
               <SelectTrigger className="w-full border-gray-300 focus:ring-2 focus:ring-blue-500">
                 <SelectValue placeholder="Choose an option" />
               </SelectTrigger>
@@ -51,15 +86,22 @@ const DataView = () => {
                 ))}
               </SelectContent>
             </Select>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
           </div>
 
           <LoadingButton />
         </form>
 
-        <div className="mt-6">
-          <div className="text-center text-gray-500 italic">
-            Results will appear here
-          </div>
+        <div className="mt-6 text-center">
+          {loading ? (
+            <p className="text-gray-500 italic">Loading data...</p>
+          ) : data ? (
+            <pre className="text-sm text-gray-700 bg-gray-100 p-2 rounded">
+              {JSON.stringify(data, null, 2)}
+            </pre>
+          ) : (
+            <p className="text-gray-500 italic">Results will appear here</p>
+          )}
         </div>
       </CardContent>
     </Card>

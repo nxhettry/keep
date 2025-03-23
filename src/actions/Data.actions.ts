@@ -77,3 +77,25 @@ export const SaveData = async (formData: FormData) => {
     console.log("Error saving data");
   }
 };
+
+export const getContent = async (category: string) => {
+  switch (category) {
+    case "accounts":
+      log("accounts");
+      return accountsCollection;
+    case "notes":
+      log("notes");
+      return JSON.parse(JSON.stringify(notesCollection));
+    case "cards":
+      log("cards");
+      return cardsCollection;
+    case "pins":
+      log("pins");
+      return pinsCollection;
+    case "keys":
+      log("keys");
+      return keysCollection;
+    default:
+      break;
+  }
+};
