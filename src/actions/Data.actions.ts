@@ -43,11 +43,6 @@ const postContent = async (
   }
 };
 
-export const FilterData = async (formData: FormData) => {
-  const option = formData.get("option");
-  console.log(option);
-};
-
 export const SaveData = async (formData: FormData) => {
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
@@ -82,25 +77,47 @@ export const getContent = async (category: string) => {
   switch (category) {
     case "accounts":
       log("accounts");
-      return accountsCollection;
+      const accountSnapshot = await getDocs(accountsCollection);
+
+      const accounts = accountSnapshot.docs.map((doc) => {
+        return { id: doc.id, ...doc.data() };
+      });
+
+      return accounts;
     case "notes":
       log("notes");
       const snapshot = await getDocs(notesCollection);
 
-      const data = snapshot.docs.map((doc) => {
+      const notes = snapshot.docs.map((doc) => {
         return { id: doc.id, ...doc.data() };
       });
-      return data;
+      return notes;
 
     case "cards":
       log("cards");
-      return cardsCollection;
+      const cardsSnapshot = await getDocs(cardsCollection);
+      const cards = cardsSnapshot.docs.map((doc) => {
+        return { id: doc.id, ...doc.data() };
+      });
+
+      return cards;
     case "pins":
       log("pins");
-      return pinsCollection;
+      const pinsSnapshot = await getDocs(pinsCollection);
+      const pins = pinsSnapshot.docs.map((doc) => {
+        return { id: doc.id, ...doc.data() };
+      });
+
+      return pins;
     case "keys":
       log("keys");
-      return keysCollection;
+      const keysSnapshot = await getDocs(keysCollection);
+
+      const keys = keysSnapshot.docs.map((doc) => {
+        return { id: doc.id, ...doc.data() };
+      });
+
+      return keys;
     default:
       break;
   }
