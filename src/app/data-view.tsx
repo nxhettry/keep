@@ -10,9 +10,17 @@ import {
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import LoadingButton from "./loading-button";
-import { getContent } from "@/actions/Data.actions";
 import { useState } from "react";
-import { EntryType } from "../../types/entry.types";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useStore } from "@/store/store";
 
 const dropdownOptions = [
   { value: "notes", label: "Notes" },
@@ -21,12 +29,21 @@ const dropdownOptions = [
   { value: "pin", label: "Pins" },
 ];
 
+export interface DisplayDataType {
+  title: string;
+  content: string;
+  id: string;
+}
+
 const DataView = () => {
-  const [data, setData] = useState<EntryType[] | null>(null);
-  const [selectedOption, setSelectedOption] = useState<string | undefined>();
+  const [selectedOption, setSelectedOption] = useState<
+    "notes" | "accounts" | "cards" | "pins" | "keys" | undefined
+  >();
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const { data, getInfo } = useStore();
 
   const handleDataFetching = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,8 +56,7 @@ const DataView = () => {
     setError(null);
 
     try {
-      const allData = await getContent(selectedOption);
-      console.log(allData);
+      await getInfo(selectedOption);
     } catch (error) {
       setError("Failed to fetch data. Try again later.");
       console.error(error);
@@ -50,7 +66,7 @@ const DataView = () => {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-lg">
+    <Card className="w-full shadow-lg">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center">
           Data Filter
@@ -69,7 +85,11 @@ const DataView = () => {
             <Select
               name="option"
               value={selectedOption}
-              onValueChange={setSelectedOption}
+              onValueChange={(value) =>
+                setSelectedOption(
+                  value as "notes" | "accounts" | "cards" | "pins" | "keys"
+                )
+              }
             >
               <SelectTrigger className="w-full border-gray-300 focus:ring-2 focus:ring-blue-500">
                 <SelectValue placeholder="Choose an option" />
@@ -96,9 +116,29 @@ const DataView = () => {
           {loading ? (
             <p className="text-gray-500 italic">Loading data...</p>
           ) : data ? (
-            <pre className="text-sm text-gray-700 bg-gray-100 p-2 rounded">
-              {JSON.stringify(data, null, 2)}
-            </pre>
+            <Table>
+              <TableCaption>A list of your recent invoices.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">S.N.</TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.map((item: DisplayDataType, index: number) => {
+                  return (
+                    <TableRow key={item.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{item.title}</TableCell>
+                      <TableCell>
+                        <button className="text-blue-500">View</button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
           ) : (
             <p className="text-gray-500 italic">Results will appear here</p>
           )}

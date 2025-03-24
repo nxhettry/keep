@@ -1,7 +1,7 @@
 "use server";
 
 import { EntrySchema } from "../../types/entry.types";
-import { addDoc } from "@firebase/firestore";
+import { addDoc, getDocs } from "@firebase/firestore";
 import {
   accountsCollection,
   cardsCollection,
@@ -85,7 +85,13 @@ export const getContent = async (category: string) => {
       return accountsCollection;
     case "notes":
       log("notes");
-      return JSON.parse(JSON.stringify(notesCollection));
+      const snapshot = await getDocs(notesCollection);
+
+      const data = snapshot.docs.map((doc) => {
+        return { id: doc.id, ...doc.data() };
+      });
+      return data;
+
     case "cards":
       log("cards");
       return cardsCollection;
