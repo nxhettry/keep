@@ -1,7 +1,7 @@
 "use server";
 
 import { EntrySchema } from "../../types/entry.types";
-import { addDoc, getDocs } from "@firebase/firestore";
+import { addDoc, doc, getDoc, getDocs } from "@firebase/firestore";
 import {
   accountsCollection,
   cardsCollection,
@@ -101,17 +101,24 @@ export const getAllContent = async (category: string) => {
 export const getContent = async (category: string, id: string) => {
   const collectionRef = collectionMap[category];
 
-  if (!collectionRef) {
+  const docRef = doc(collectionRef, id);
+
+  if (!docRef) {
     throw new Error(`Invalid category: ${category}`);
   }
 
   log("Gett", category);
 
-  const doc = await collectionRef.doc(id).get();
+  const docSnap = await getDoc(docRef);
 
-  if (!doc.exists) {
-    throw new Error(`No such document with ID: ${id}`);
+  if (docSnap.exists()) {
+    return {
+      id: docSnap.id,
+      ...(docSnap.data() as object),
+    };
+  } else {
+    console.log("No such document!");
+
+    return null;
   }
-
-  return { id: doc.id, ...(doc.data() as object) };
 };
