@@ -138,7 +138,7 @@ const DataView = () => {
                       <TableCell>
                         <FaEye
                           onClick={() => {
-                            router.push(`/data/${item.id}`);
+                            router.push(`/data/${item.id}?category=${selectedOption}`);
                           }}
                           color="black"
                         />

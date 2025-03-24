@@ -10,7 +10,17 @@ import {
   pinsCollection,
 } from "../../firebase-config";
 
-const log = (text: string) => console.log(`Saving ${text} to database . . .`);
+const log = (method: string, text: string) =>
+  console.log(`${method}ing ${text} to database . . .`);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const collectionMap: Record<string, any> = {
+  accounts: accountsCollection,
+  notes: notesCollection,
+  cards: cardsCollection,
+  pins: pinsCollection,
+  keys: keysCollection,
+};
 
 const postContent = async (
   category: string,
@@ -19,23 +29,23 @@ const postContent = async (
 ) => {
   switch (category) {
     case "accounts":
-      log("account");
+      log("Post", "account");
       await addDoc(accountsCollection, { title, content });
       return true;
     case "notes":
-      log("note");
+      log("Post", "note");
       await addDoc(notesCollection, { title, content });
       return true;
     case "cards":
-      log("card");
+      log("Post", "card");
       await addDoc(cardsCollection, { title, content });
       return true;
     case "pins":
-      log("pin");
+      log("Post", "pin");
       await addDoc(pinsCollection, { title, content });
       return true;
     case "keys":
-      log("key");
+      log("Post", "key");
       await addDoc(keysCollection, { title, content });
       return true;
     default:
@@ -73,52 +83,35 @@ export const SaveData = async (formData: FormData) => {
   }
 };
 
-export const getContent = async (category: string) => {
-  switch (category) {
-    case "accounts":
-      log("accounts");
-      const accountSnapshot = await getDocs(accountsCollection);
+export const getAllContent = async (category: string) => {
+  const collectionRef = collectionMap[category];
 
-      const accounts = accountSnapshot.docs.map((doc) => {
-        return { id: doc.id, ...doc.data() };
-      });
-
-      return accounts;
-    case "notes":
-      log("notes");
-      const snapshot = await getDocs(notesCollection);
-
-      const notes = snapshot.docs.map((doc) => {
-        return { id: doc.id, ...doc.data() };
-      });
-      return notes;
-
-    case "cards":
-      log("cards");
-      const cardsSnapshot = await getDocs(cardsCollection);
-      const cards = cardsSnapshot.docs.map((doc) => {
-        return { id: doc.id, ...doc.data() };
-      });
-
-      return cards;
-    case "pins":
-      log("pins");
-      const pinsSnapshot = await getDocs(pinsCollection);
-      const pins = pinsSnapshot.docs.map((doc) => {
-        return { id: doc.id, ...doc.data() };
-      });
-
-      return pins;
-    case "keys":
-      log("keys");
-      const keysSnapshot = await getDocs(keysCollection);
-
-      const keys = keysSnapshot.docs.map((doc) => {
-        return { id: doc.id, ...doc.data() };
-      });
-
-      return keys;
-    default:
-      break;
+  if (!collectionRef) {
+    throw new Error(`Invalid category: ${category}`);
   }
+
+  log("Gett", category);
+  const snapshot = await getDocs(collectionRef);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as object),
+  }));
+};
+
+export const getContent = async (category: string, id: string) => {
+  const collectionRef = collectionMap[category];
+
+  if (!collectionRef) {
+    throw new Error(`Invalid category: ${category}`);
+  }
+
+  log("Gett", category);
+
+  const doc = await collectionRef.doc(id).get();
+
+  if (!doc.exists) {
+    throw new Error(`No such document with ID: ${id}`);
+  }
+
+  return { id: doc.id, ...(doc.data() as object) };
 };
