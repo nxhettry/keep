@@ -89,6 +89,7 @@ const DataView = () => {
             <Select
               name="option"
               value={selectedOption}
+              
               onValueChange={(value) =>
                 setSelectedOption(
                   value as "notes" | "accounts" | "cards" | "pins" | "keys"
