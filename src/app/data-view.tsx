@@ -1,5 +1,6 @@
 "use client";
 
+import { FaEye } from "react-icons/fa";
 import {
   Select,
   SelectContent,
@@ -21,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useStore } from "@/store/store";
+import { useRouter } from "next/navigation";
 
 const dropdownOptions = [
   { value: "notes", label: "Notes" },
@@ -44,6 +46,8 @@ const DataView = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const { data, getInfo } = useStore();
+
+  const router = useRouter();
 
   const handleDataFetching = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,7 +136,12 @@ const DataView = () => {
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{item.title}</TableCell>
                       <TableCell>
-                        <button className="text-blue-500">View</button>
+                        <FaEye
+                          onClick={() => {
+                            router.push(`/data/${item.id}`);
+                          }}
+                          color="black"
+                        />
                       </TableCell>
                     </TableRow>
                   );
