@@ -1,7 +1,7 @@
 "use server";
 
 import { EntrySchema } from "../../types/entry.types";
-import { addDoc } from "@firebase/firestore";
+import { addDoc, doc, getDoc, getDocs } from "@firebase/firestore";
 import {
   accountsCollection,
   cardsCollection,
@@ -10,7 +10,17 @@ import {
   pinsCollection,
 } from "../../firebase-config";
 
-const log = (text: string) => console.log(`Saving ${text} to database . . .`);
+const log = (method: string, text: string) =>
+  console.log(`${method}ing ${text} to database . . .`);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const collectionMap: Record<string, any> = {
+  accounts: accountsCollection,
+  notes: notesCollection,
+  cards: cardsCollection,
+  pins: pinsCollection,
+  keys: keysCollection,
+};
 
 const postContent = async (
   category: string,
@@ -19,33 +29,28 @@ const postContent = async (
 ) => {
   switch (category) {
     case "accounts":
-      log("account");
+      log("Post", "account");
       await addDoc(accountsCollection, { title, content });
       return true;
     case "notes":
-      log("note");
+      log("Post", "note");
       await addDoc(notesCollection, { title, content });
       return true;
     case "cards":
-      log("card");
+      log("Post", "card");
       await addDoc(cardsCollection, { title, content });
       return true;
     case "pins":
-      log("pin");
+      log("Post", "pin");
       await addDoc(pinsCollection, { title, content });
       return true;
     case "keys":
-      log("key");
+      log("Post", "key");
       await addDoc(keysCollection, { title, content });
       return true;
     default:
       break;
   }
-};
-
-export const FilterData = async (formData: FormData) => {
-  const option = formData.get("option");
-  console.log(option);
 };
 
 export const SaveData = async (formData: FormData) => {
@@ -75,5 +80,45 @@ export const SaveData = async (formData: FormData) => {
     console.log("Data saved successfully");
   } else {
     console.log("Error saving data");
+  }
+};
+
+export const getAllContent = async (category: string) => {
+  const collectionRef = collectionMap[category];
+
+  if (!collectionRef) {
+    throw new Error(`Invalid category: ${category}`);
+  }
+
+  log("Gett", category);
+  const snapshot = await getDocs(collectionRef);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as object),
+  }));
+};
+
+export const getContent = async (category: string, id: string) => {
+  const collectionRef = collectionMap[category];
+
+  const docRef = doc(collectionRef, id);
+
+  if (!docRef) {
+    throw new Error(`Invalid category: ${category}`);
+  }
+
+  log("Gett", category);
+
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return {
+      id: docSnap.id,
+      ...(docSnap.data() as object),
+    };
+  } else {
+    console.log("No such document!");
+
+    return null;
   }
 };
