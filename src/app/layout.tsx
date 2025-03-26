@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased w-full sm:w-4/5 mx-auto">{children}</body>
+        <body className="antialiased w-full sm:w-4/5 mx-auto">{children}</body>
     </html>
   );
 }

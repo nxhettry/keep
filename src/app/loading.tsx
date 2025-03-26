@@ -1,7 +1,7 @@
-import React from "react";
+import { Skeleton } from "@radix-ui/themes";
 
 const Loading = () => {
-  return <div>Loading</div>;
+  return <Skeleton>Loading</Skeleton>;
 };
 
 export default Loading;
