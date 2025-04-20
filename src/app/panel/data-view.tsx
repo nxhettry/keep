@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import LoadingButton from "./loading-button";
+import LoadingButton from "@/app/loading-button";
 import { useState } from "react";
 import {
   Table,
@@ -38,6 +38,7 @@ export interface DisplayDataType {
 }
 
 const DataView = () => {
+
   const [selectedOption, setSelectedOption] = useState<
     "notes" | "accounts" | "cards" | "pins" | "keys" | undefined
   >();
@@ -89,7 +90,6 @@ const DataView = () => {
             <Select
               name="option"
               value={selectedOption}
-              
               onValueChange={(value) =>
                 setSelectedOption(
                   value as "notes" | "accounts" | "cards" | "pins" | "keys"
@@ -139,7 +139,9 @@ const DataView = () => {
                       <TableCell>
                         <FaEye
                           onClick={() => {
-                            router.push(`/data/${item.id}?category=${selectedOption}`);
+                            router.push(
+                              `/data/${item.id}?category=${selectedOption}`
+                            );
                           }}
                           color="black"
                         />

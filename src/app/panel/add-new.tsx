@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import LoadingButton from "./loading-button";
+import LoadingButton from "@/app/loading-button";
 import { Input } from "@/components/ui/input";
 import { SaveData } from "@/actions/Data.actions";
 
