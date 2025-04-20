@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginUserAction } from "@/actions/Auth.actions";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import UploadButton from "@/components/UploadButton";
+import { signInUserService } from "@/lib/auth";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -14,8 +14,9 @@ const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!email || !password) throw new Error("Email and password are required");
     try {
-      await loginUserAction(new FormData(e.target as HTMLFormElement));
+      await signInUserService(email, password);
 
       router.push("/panel");
     } catch (error) {

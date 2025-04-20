@@ -10,7 +10,7 @@ import Link from "next/link";
 const Home = () => {
   const { user } = useAuth();
 
-  if (user?.email !== "dev.nxhettry@gmail.com") {
+  if (!user) {
     return (
       <div className="h-screen w-full flex flex-col justify-center items-center">
         <Image
