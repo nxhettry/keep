@@ -54,39 +54,19 @@ export const authOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+
+      async authorize(credentials: Record<string, string>) {
         let user = null;
 
-        // Check if credentials are provided
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Please enter your email and password");
+        const { email, password } = credentials;
+
+        if (!email || !password) {
+          throw new Error("❌ Email and password are required !");
         }
 
-        // Check if user is signing in or signing up
-        if (credentials.email && credentials.password) {
-          // You can add a custom logic to check if the user is trying to sign up or log in
-          // In this example, we just assume it's a sign-in.
-          user = await signInUser(
-            credentials.email as string,
-            credentials.password as string
-          );
-        }
+        // check for the user in DB
+        const user = await 
 
-        if (!user) {
-          // If the sign-in fails, you can check for a sign-up attempt
-          user = await signUp(
-            credentials.email as string,
-            credentials.password as string
-          );
-        }
-
-        if (user) {
-          // If successful, return user data
-          return user;
-        }
-
-        // If no user, return null
-        return null;
       },
     }),
   ],
