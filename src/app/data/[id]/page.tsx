@@ -1,5 +1,5 @@
 import { getContent } from "@/actions/Data.actions";
-import { DisplayDataType } from "@/app/data-view";
+import { DisplayDataType } from "@/app/panel/data-view";
 import React from "react";
 import NoteDisplay from "./DisplayArea";
 

@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AuthProvider>
-        <body className="antialiased w-full sm:w-4/5 mx-auto">{children}</body>
+        <body className="antialiased w-full sm:w-4/5 mx-auto bg-gray-50">{children}</body>
       </AuthProvider>
     </html>
   );

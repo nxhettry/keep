@@ -1,5 +1,5 @@
 "use client";
-import { DisplayDataType } from "@/app/data-view";
+import { DisplayDataType } from "@/app/panel/data-view";
 import { useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";

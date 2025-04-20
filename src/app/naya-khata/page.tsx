@@ -1,14 +1,14 @@
-import { loginUserAction } from "@/actions/Auth.actions";
+import { registerUserAction } from "@/actions/Auth.actions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import UploadButton from "@/components/UploadButton";
 import React from "react";
 
-const Login = async () => {
+const Register = async () => {
   return (
     <div className="h-screen w-full flex justify-center items-center">
       <form
-        action={loginUserAction}
+        action={registerUserAction}
         className="bg-white w-full sm:wd-4/5 md:w-3/5 h-auto rounded-lg p-8 shadow-md space-y-3"
       >
         <div>
@@ -20,10 +20,10 @@ const Login = async () => {
           <Input type="password" name="password" required />
         </div>
 
-        <UploadButton type="login" />
+        <UploadButton type="signup" />
       </form>
     </div>
   );
 };
 
-export default Login;
+export default Register;
