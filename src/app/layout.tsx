@@ -14,8 +14,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <AuthProvider>
-        <body className="antialiased w-full sm:w-4/5 mx-auto bg-gray-50">{children}</body>
+        <body className="antialiased w-full sm:w-4/5 mx-auto bg-gray-50">
+          {children}
+        </body>
       </AuthProvider>
     </html>
   );
