@@ -1,4 +1,4 @@
-import { getAllContent } from "@/actions/Data.actions";
+import { deleteContent, getAllContent } from "@/actions/Data.actions";
 import { DisplayDataType } from "@/app/panel/data-view";
 import { create } from "zustand";
 
@@ -9,6 +9,7 @@ interface StoreState {
     text: "notes" | "accounts" | "cards" | "pins" | "keys"
   ) => Promise<void>;
   getSingleData: (id: string, category: string) => Promise<void>;
+  deleteInfo: (id: string, category: string) => Promise<void>;
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -32,6 +33,16 @@ export const useStore = create<StoreState>((set) => ({
       set({ singleData });
     } catch (error) {
       console.error("Error fetching single data:", error);
+    }
+  },
+
+  deleteInfo: async (id: string, category: string) => {
+    try {
+      await deleteContent(category, id);
+      const data = (await getAllContent(category)) as DisplayDataType[];
+      set({ data });
+    } catch (error) {
+      console.error("Error deleting data:", error);
     }
   },
 }));

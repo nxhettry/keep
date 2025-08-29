@@ -1,7 +1,7 @@
 "use server";
 
 import { EntrySchema } from "../../types/entry.types";
-import { addDoc, doc, getDoc, getDocs } from "@firebase/firestore";
+import { addDoc, deleteDoc, doc, getDoc, getDocs } from "@firebase/firestore";
 import {
   accountsCollection,
   cardsCollection,
@@ -107,8 +107,6 @@ export const getContent = async (category: string, id: string) => {
     throw new Error(`Invalid category: ${category}`);
   }
 
-  log("Gett", category);
-
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
@@ -121,4 +119,11 @@ export const getContent = async (category: string, id: string) => {
 
     return null;
   }
+};
+
+export const deleteContent = async (category: string, id: string) => {
+  const docRef = doc(collectionMap[category], id);
+  await deleteDoc(docRef);
+
+  console.log(`Deleted document ${id} from ${category} collection`);
 };

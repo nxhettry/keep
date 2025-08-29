@@ -1,6 +1,6 @@
 "use client";
 
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaTrash } from "react-icons/fa";
 import {
   Select,
   SelectContent,
@@ -28,7 +28,8 @@ const dropdownOptions = [
   { value: "notes", label: "Notes" },
   { value: "accounts", label: "Accounts" },
   { value: "cards", label: "Cards" },
-  { value: "pin", label: "Pins" },
+  { value: "pins", label: "Pins" },
+  { value: "keys", label: "Keys" },
 ];
 
 export interface DisplayDataType {
@@ -38,7 +39,6 @@ export interface DisplayDataType {
 }
 
 const DataView = () => {
-
   const [selectedOption, setSelectedOption] = useState<
     "notes" | "accounts" | "cards" | "pins" | "keys" | undefined
   >();
@@ -46,7 +46,7 @@ const DataView = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { data, getInfo } = useStore();
+  const { data, getInfo, deleteInfo } = useStore();
 
   const router = useRouter();
 
@@ -144,6 +144,14 @@ const DataView = () => {
                             );
                           }}
                           color="black"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <FaTrash
+                          onClick={() => {
+                            deleteInfo(item.id, selectedOption as string);
+                          }}
+                          color="red"
                         />
                       </TableCell>
                     </TableRow>
